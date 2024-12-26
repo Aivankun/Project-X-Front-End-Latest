@@ -83,7 +83,6 @@ const ResultSection = ({ interviewId }) => {
       "I mean, honestly",
     ]
   ).map((word) => word.toLowerCase());
-  console.log(fillerWords);
   const highlightFillerWords = (text) => {
     // Split text into words
     const words = text.split(" ");
@@ -94,7 +93,6 @@ const ResultSection = ({ interviewId }) => {
 
       // Check if the cleaned word is in the fillerWords list
       if (fillerWords.includes(lowerWord)) {
-        console.log(word);
         return (
           <span key={index} className="filler-red">
             {word} {/* Render the word with punctuation intact */}
