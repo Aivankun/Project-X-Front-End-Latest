@@ -63,7 +63,7 @@ const CandidateDetailsPopUp = ({ candidates, onClose }) => {
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <g clip-path="url(#clip0_3637_3155)">
+                  <g  clip-path="url(#clip0_3637_3155)">
                     <path
                       fill-rule="evenodd"
                       clip-rule="evenodd"

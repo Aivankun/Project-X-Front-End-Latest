@@ -1,17 +1,35 @@
 import React, { useState } from "react";
-import logo from "../../assets/logo.png";
 import "../../styles/ResumeFitOptimizer.css";
 import { Button, Row, Col } from "react-bootstrap";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function UploadDocs() {
+  const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
   const [uploadedFile, setUploadedFile] = useState(null);
-
+  const [jobDescription, setJobDescription] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const API = process.env.REACT_APP_API_URL;
+  const userStr = localStorage.getItem("user");
+  const user = userStr ? JSON.parse(userStr) : null; 
+  const token = user?.token;
+  
+  
   const onUploadComplete = (file) => {
     setUploadedFile(file);
+    console.log("setting file");
+  };
+  const validateFile = (file) => {
+    const validTypes = [
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+    return validTypes.includes(file.type);
   };
   const handleFileDrop = (event) => {
     event.preventDefault();
+    setIsLoading(true);
     const files = Array.from(event.dataTransfer.files);
     const validFiles = files.filter((file) =>
       [
@@ -25,11 +43,14 @@ function UploadDocs() {
     } else {
       setErrorMessage("");
       onUploadComplete(validFiles[0]);
+      setIsLoading(false);
     }
   };
 
   const handleBrowseFiles = (event) => {
     const files = Array.from(event.target.files);
+    setIsLoading(true);
+    
     const validFiles = files.filter((file) =>
       [
         "application/msword",
@@ -42,8 +63,63 @@ function UploadDocs() {
     } else {
       setErrorMessage("");
       onUploadComplete(validFiles[0]);
+      setIsLoading(false);
     }
   };
+
+  const validateForm = () => {
+    if (!uploadedFile) {
+      setErrorMessage("Please upload a file.");
+      return false;
+    }
+    if (!validateFile(uploadedFile)) {
+      setErrorMessage("Only DOC, and DOCX files are allowed.");
+      return false;
+    }
+    if (!jobDescription || typeof jobDescription !== "string") {
+      setErrorMessage("Please enter a valid job description.");
+      return false;
+    }
+    setErrorMessage("");
+    return true;
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    const URL = `${API}/api/resume-fit-optimizer/upload-documents`;
+    setIsLoading(true);
+    const userID = user?.id;
+    const service = user?.service;
+
+    try {
+      const formData = new FormData();
+      formData.append("userID", userID);
+      formData.append("service", service);
+      formData.append("file", uploadedFile);
+      formData.append("jobDescription", jobDescription);
+      const response = await axios.post(URL, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      
+
+      if (response.status === 201) {
+        console.log("Document uploaded successfully:", response.data);
+        setUploadedFile(null);
+        setJobDescription("");
+        setErrorMessage("");
+        navigate("/ResumeFitOptimizer/AIResumeOptimizationAnalysis");
+      }
+    } catch (error) {
+      console.error("Upload failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
 
   return (
     <>
@@ -85,10 +161,11 @@ function UploadDocs() {
                       <p>Drag & Drop Resume</p>
                       <Button
                         className="btn btn-secondary"
+                        disabled={isLoading}
                         onClick={() =>
                           document.getElementById("fileInput").click()
                         }
-                      >
+                      >                  
                         Select File
                       </Button>
                       <i className="support-file-text">Supports DOC, DOCX</i>
@@ -111,6 +188,8 @@ function UploadDocs() {
                         name="job-description"
                         id="job-description"
                         placeholder="Type job description....."
+                        value={jobDescription}
+                        onChange={(e) => setJobDescription(e.target.value)}
                       ></textarea>
                     </div>
                   </div>
@@ -122,12 +201,17 @@ function UploadDocs() {
                 <div className="upload-docs-btn d-flex justify-content-end align-items-center">
                   <button
                     className="btn-continue-optimization btn-primary"
-                    onClick={() =>
-                      (window.location.href =
-                        "/ResumeFitOptimizer/AIResumeOptimizationAnalysis")
-                    }
+                    onClick={handleFormSubmit}
+                    disabled={isLoading}
+                    
+                    // onClick={() =>
+                    //   (window.location.href =
+                    //     "/ResumeFitOptimizer/AIResumeOptimizationAnalysis")
+                    // }
                   >
-                    Continue to Optimization
+                    {isLoading
+                      ? "Loading..."
+                      : "Continue to Optimization"}
                   </button>
                 </div>
               </Col>
