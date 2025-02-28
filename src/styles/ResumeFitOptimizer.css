@@ -351,7 +351,28 @@ textarea::placeholder {
 .btn-save-export {
     background: var(--primary-color) !important;
 }
-
+.compareresumes-content-resume-original-content {
+    height: 500px;
+    overflow-y: auto;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #ddd;
+  }
+  
+  .compareresumes-content-resume-original-content h1,
+  .compareresumes-content-resume-original-content h2,
+  .compareresumes-content-resume-original-content h3 {
+    font-weight: bold;
+  }
+  
+  .compareresumes-content-resume-original-content p {
+    line-height: 1.6;
+  }
+  .compareresumes-content-resume-original-content > table {
+    transform: scale(0.5);
+    transform-origin: top left;
+    width: 200%;
+}
 
 
 

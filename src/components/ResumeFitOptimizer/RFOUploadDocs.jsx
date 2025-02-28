@@ -12,8 +12,8 @@ function UploadDocs() {
   const [isLoading, setIsLoading] = useState(false);
   const API = process.env.REACT_APP_API_URL;
   const userStr = localStorage.getItem("user");
-  const user = userStr ? JSON.parse(userStr) : null; 
-  const token = user?.token;
+  const userData = userStr ? JSON.parse(userStr) : null; 
+  const token = userData?.token;
   
   
   const onUploadComplete = (file) => {
@@ -90,15 +90,21 @@ function UploadDocs() {
 
     const URL = `${API}/api/resume-fit-optimizer/upload-documents`;
     setIsLoading(true);
-    const userID = user?.id;
-    const service = user?.service;
+    const userId = userData.id;
+    const service = userData.service;
+    const name = userData.name;
+    const email = userData.email;
+    const token = userData.token;
 
     try {
+      const user = { 
+        userId, name, email, service, token
+      };
       const formData = new FormData();
-      formData.append("userID", userID);
-      formData.append("service", service);
-      formData.append("file", uploadedFile);
-      formData.append("jobDescription", jobDescription);
+      formData.append('jobDescription', jobDescription);
+      formData.append('file', uploadedFile);
+      formData.append('user', JSON.stringify(user));
+      
       const response = await axios.post(URL, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -111,6 +117,7 @@ function UploadDocs() {
         setUploadedFile(null);
         setJobDescription("");
         setErrorMessage("");
+        localStorage.setItem('rfoUploadedDocxData', JSON.stringify(response.data));
         navigate("/ResumeFitOptimizer/AIResumeOptimizationAnalysis");
       }
     } catch (error) {
