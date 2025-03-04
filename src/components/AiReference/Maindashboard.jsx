@@ -14,6 +14,10 @@ import axios from "axios";
 Chart.register(...registerables);
 
 const LogContainer = ({ logData }) => {
+  const handleToggleShowAll = (event) => {
+    event.preventDefault(); // Prevent default anchor behavior
+    setShowAll(!showAll);
+  };
   const [showAll, setShowAll] = useState(false);
   const displayedLogs = showAll ? logData : logData.slice(0, 4);
 
@@ -21,7 +25,7 @@ const LogContainer = ({ logData }) => {
     <div className="LogContainer my-4">
       <div className="d-flex justify-content-between align-items-center">
         <p className="mb-3">Recent Activities</p>
-        <a href="#" onClick={() => setShowAll(!showAll)}>
+        <a href="#" onClick={handleToggleShowAll}>
           {showAll ? "Show Less" : "View All"}
         </a>
       </div>
@@ -66,7 +70,6 @@ const MainDashboard = () => {
     setShowAddReferenceRequest(true); // Set to true to show AddRequestComponent
     setShowAddCandidate(false); // Hide AddCandidateComponent
     setShowJobForm(false); // Set to true to show the job form
-
   };
 
   const [candidates, setCandidates] = useState(
@@ -267,9 +270,10 @@ const MainDashboard = () => {
     },
     { title: "Total Candidates", count: totalCandidateCount, color: "#686868" },
   ];
-  // Data for the line chart
-  const lineData = {
-    labels: [
+
+  //This function return an array of months according to the reference data
+  const getMonthlyCounts = (reference) => {
+    const monthNames = [
       "January",
       "February",
       "March",
@@ -278,11 +282,52 @@ const MainDashboard = () => {
       "June",
       "July",
       "August",
-    ],
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    const monthMap = new Map();
+
+    // Initialize month map
+    reference.forEach((record) => {
+      const date = new Date(record.dateSent);
+      const month = monthNames[date.getMonth()];
+
+      if (!monthMap.has(month)) {
+        monthMap.set(month, { total: 0, completed: 0 });
+      }
+
+      monthMap.get(month).total += 1;
+
+      if (record.status === "Completed") {
+        monthMap.get(month).completed += 1;
+      }
+    });
+
+    // Sort months based on order in the monthNames array
+    const months = Array.from(monthMap.keys()).sort(
+      (a, b) => monthNames.indexOf(a) - monthNames.indexOf(b)
+    );
+    const totalReferenceCount = months.map(
+      (month) => monthMap.get(month).total
+    );
+    const completedReferenceCounts = months.map(
+      (month) => monthMap.get(month).completed
+    );
+
+    return { months, totalReferenceCount, completedReferenceCounts };
+  };
+  const { months, totalReferenceCount, completedReferenceCounts } =
+    getMonthlyCounts(reference);
+  // Data for the line chart
+  const lineData = {
+    labels: months,
     datasets: [
       {
         label: "Total",
-        data: [300, 320, 350, 380, 410, 440, 470, 500],
+        data: totalReferenceCount,
         fill: false,
         backgroundColor: "#1877F2",
         borderColor: "#1877F2",
@@ -290,7 +335,7 @@ const MainDashboard = () => {
       },
       {
         label: "Completed",
-        data: [120, 140, 160, 180, 200, 220, 240, 260],
+        data: completedReferenceCounts,
         fill: false,
         backgroundColor: "#319F43",
         borderColor: "#319F43",
@@ -309,7 +354,6 @@ const MainDashboard = () => {
       tooltipEl.innerHTML = "<table></table>";
       document.body.appendChild(tooltipEl);
     }
-
     return tooltipEl;
   };
 
@@ -558,7 +602,7 @@ const MainDashboard = () => {
     if (!abortController.signal.aborted) {
       timeoutRef.current = setTimeout(
         () => refetchAllData(timeoutRef, abortController),
-        10000
+        30000
       );
     }
   }
@@ -576,12 +620,48 @@ const MainDashboard = () => {
       abortControllerRef.current.abort();
     };
   }, []);
+
+  // Prevent accidental page exit
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue = "Are you sure you want to leave this page?";
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, []);
+
+  //Add a warning when user is navigating back to previous page
+  useEffect(() => {
+    const handleBackButton = (event) => {
+      event.preventDefault();
+      const userConfirmed = window.confirm(
+        "Are you sure you want to go back? Your progress will be lost."
+      );
+      if (!userConfirmed) {
+        window.history.pushState(null, "", window.location.pathname);
+      }
+    };
+
+    window.history.pushState(null, "", window.location.pathname);
+    window.addEventListener("popstate", handleBackButton);
+
+    return () => {
+      window.removeEventListener("popstate", handleBackButton);
+    };
+  }, []);
   return (
     <div className="MockMainDashboard-content d-flex flex-column gap-2">
-    {showAddCandidate ? (
-        <AddCandidateComponent onProceed={handleShowAddReferenceRequest} /> // Pass the updated function
+      {showAddCandidate ? (
+        <AddCandidateComponent
+          onProceed={handleShowAddReferenceRequest}
+          refetch={reFetchCandidates}
+        />
       ) : showJobForm ? (
-        <AddJobComponent onProceed={handleShowAddCandidate} />
+        <AddJobComponent
+          onProceed={handleShowAddCandidate}
+          refetch={fetchJobs}
+        />
       ) : showAddReferenceRequest ? (
         <AddRequestComponent />
       ) : (
@@ -618,15 +698,14 @@ const MainDashboard = () => {
               {cardData.map((card, index) => (
                 <Col key={index} md={3}>
                   <div className="AiReferenceCard">
-                    {/* Title and Count */}
                     <div className="h-100">
                       <p className="d-flex title">
                         <div
                           style={{
                             width: "20px",
                             height: "20px",
-                            backgroundColor: card.color, // Dynamic color from card data
-                            marginRight: "10px", // Space between box and title
+                            backgroundColor: card.color,
+                            marginRight: "10px",
                           }}
                         ></div>
                         {card.title}
@@ -663,6 +742,7 @@ const MainDashboard = () => {
           <LogContainer logData={logData} />
         </>
       )}
+      {/* <AddRequestComponent /> */}
     </div>
   );
 };

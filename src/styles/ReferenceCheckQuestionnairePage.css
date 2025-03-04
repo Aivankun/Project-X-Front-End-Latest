@@ -44,32 +44,25 @@
 }
 .referencecheckquestion-container button {
   width: 200px;
-  padding: 5px 25px;
+  padding: 5px 25px 5px 30px;
   font-weight: 400;
   border: none;
   color: var(--font-white);
-  border-radius: 10px;
+  border-radius: 50px;
   font-size: 25px;
   position: relative;
+  background: var(--secondary-color) !important;
 }
-.referencecheckquestion-container button:nth-child(1) {
-  background: #686868 !important;
+
+.referencecheckquestion-container button:disabled {
+  background: var(--input-bg) !important;
+
+  cursor: not-allowed;
 }
-.referencecheckquestion-container button:nth-child(2) {
-  background: #1877f2 !important;
-}
-.referencecheckquestion-container button:nth-child(2):disabled {
-  background: #1876f259 !important;
-  cursor: not-allowed; 
-  opacity: 0.6; 
-}
-.referencecheckquestion-container button:nth-child(1) > svg{
-    position: relative;
-    left: -15px;
-}
-.referencecheckquestion-container button:nth-child(2) > svg{
-    position: relative;
-    right: -40px;
+
+.referencecheckquestion-container button > svg {
+  position: relative !important;
+  right: -40px !important;
 }
 
 .transcription-answer-container textarea {
@@ -85,63 +78,39 @@
   background: var(--primary-color) !important;
   padding: 5px 25px;
   font-weight: 400;
+  width: 200px;
   border: none;
   color: var(--font-white);
-  border-radius: 10px;
+  border-radius: 50px;
   font-size: 25px;
 }
-.transcription-answer-container button.disabled{
+.transcription-answer-container button.disabled {
   background: var(--input-bg) !important;
+
   cursor: not-allowed;
 }
-/* bg shapes */
-.orange-bg-bottom {
-  background: var(--primary-color);
-  width: 30%;
-  height: 2%;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-}
-.orange-bg-top {
-  background: var(--primary-color);
-  width: 30%;
-  height: 2%;
-  position: absolute;
-  top: 0;
-  right: 0;
-}
-.blue-bg-left {
-  background: var(--secondary-color);
-  width: 1%;
-  height: 60%;
-  position: absolute;
-  top: 0;
-  right: 0;
-}
-.blue-bg-right {
-  background: var(--secondary-color);
-  width: 1%;
-  height: 60%;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-}
+
 /* Customizing the scrollbar */
 .referencecheckquestion-container .question-container > p::-webkit-scrollbar {
   width: 5px; /* Scrollbar width */
 }
 
-.referencecheckquestion-container .question-container > p::-webkit-scrollbar-thumb {
+.referencecheckquestion-container
+  .question-container
+  > p::-webkit-scrollbar-thumb {
   background-color: var(--primary-color); /* Scrollbar thumb color */
   border-radius: 6px; /* Rounded corners */
 }
 
-.referencecheckquestion-container .question-container > p::-webkit-scrollbar-thumb:hover {
+.referencecheckquestion-container
+  .question-container
+  > p::-webkit-scrollbar-thumb:hover {
   background-color: var(--primary-color); /* Scrollbar thumb color */
 }
 
-.referencecheckquestion-container .question-container > p::-webkit-scrollbar-track {
+.referencecheckquestion-container
+  .question-container
+  > p::-webkit-scrollbar-track {
   background-color: #f1f1f1; /* Track color */
   border-radius: 6px; /* Rounded corners for the track */
 }
