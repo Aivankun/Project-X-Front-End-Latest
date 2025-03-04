@@ -377,6 +377,10 @@ textarea::placeholder {
     background: none;
     border: none;
     padding: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
 }
 button.expand-button:active,
 button.expand-button:focus {

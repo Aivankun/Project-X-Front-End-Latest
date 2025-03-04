@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button } from "react-bootstrap";
+import { Button, Row, Col } from "react-bootstrap";
 
 import DocViewer, { DocViewerRenderers } from "react-doc-viewer";
 import axios from "axios";
@@ -137,71 +137,95 @@ function CompareResumes() {
     return (
         <div className="ResumeFitOptimizer-container d-flex flex-column gap-2">
             <div className="compareresumes-container d-flex justify-content-center align-items-center flex-column gap-3">
-                <div className="compareresumes-resume-content w-100 d-flex gap-3 px-4">
-                    <div className="compareresumes-content-resume-original">
-                        <div className="compareresumes-content-resume-original-header">
-                            <h5>Original Resume</h5>
-                        </div>
-                        <div className="compareresumes-content-resume-original-content">
-                            {docData ? (
-                                <div className={`resume-original-content-container ${isExpanded ? "expanded" : ""}`}>
-                                    <DocViewer
-                                        documents={docData}
-                                        pluginRenderers={DocViewerRenderers}
-                                        style={{ height: "100%", width: "100%" }}
-                                        config={{
-                                            header: {
-                                                disableHeader: false, // Set to true if you want to remove the entire header
-                                                disableFileName: false, // Hide file name
-                                                // retainZoomLevel: false, // Keep zoom level persistent
-                                            },
-                                            zoom: {
-                                                disableZoom: true, // Disable zoom buttons
-                                                disableWheelZoom: false, // Allow zoom with scroll wheel
-                                            },
-                                            fullscreen: {
-                                                disableFullscreen: true, // Disable the full-screen button
-                                            },
-                                            theme: {
-                                                primary: "#007bff", // Customize primary theme color
-                                                secondary: "#6c757d", // Customize secondary color
-                                                text_primary: "#000000", // Text color
-                                                text_secondary: "#ffffff", // Secondary text color
-                                                disableThemeToggle: true, // Hide theme toggle button
-                                            },
-                                        }}
-                                        
-                                    />
-                                    <Button
-                                        className="expand-button"
-                                        onClick={expandResume}
-                                    >
-                                        <svg width="20" height="20" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M675 500V675H500" stroke="black" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/>
-                                            <path d="M659.062 659.016L475 475" stroke="black" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/>
-                                            <path d="M125 300V125H300" stroke="black" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/>
-                                            <path d="M140.938 140.984L325 325" stroke="black" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/>
-                                            <path d="M500 125H675V300" stroke="black" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/>
-                                            <path d="M659.016 140.938L475 325" stroke="black" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/>
-                                            <path d="M300 675H125V500" stroke="black" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/>
-                                            <path d="M140.984 659.062L325 475" stroke="black" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                    </Button>
-                                </div>
-                                
-                            ) : (
-                                <p>Loading document...</p>
-                            )}
+                <Row className=" compareresumes-resume-content w-100 d-flex gap-3 px-4">
+                    <Col className="compareresumes-content-resume-original">
+                    <div className="compareresumes-content-resume-original-header">
+                        <h5>Original Resume</h5>
+                    </div>
+                    <div className="compareresumes-content-resume-original-content">
+                        {docData ? (
+                            <div className={`resume-original-content-container ${isExpanded ? "expanded" : ""}`}>
+                                <DocViewer
+                                    documents={docData}
+                                    pluginRenderers={DocViewerRenderers}
+                                    style={{ height: "100%", width: "100%" }}
+                                    config={{
+                                        header: {
+                                            disableHeader: false, // Set to true if you want to remove the entire header
+                                            disableFileName: false, // Hide file name
+                                            // retainZoomLevel: false, // Keep zoom level persistent
+                                        },
+                                        zoom: {
+                                            disableZoom: true, // Disable zoom buttons
+                                            disableWheelZoom: false, // Allow zoom with scroll wheel
+                                        },
+                                        fullscreen: {
+                                            disableFullscreen: true, // Disable the full-screen button
+                                        },
+                                        theme: {
+                                            primary: "#007bff", // Customize primary theme color
+                                            secondary: "#6c757d", // Customize secondary color
+                                            text_primary: "#000000", // Text color
+                                            text_secondary: "#ffffff", // Secondary text color
+                                            disableThemeToggle: true, // Hide theme toggle button
+                                        },
+                                    }}
+                                    
+                                />
+                                <Button
+                                    className="expand-button"
+                                    onClick={expandResume}
+                                >
+                                    <svg width="20" height="20" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M675 500V675H500" stroke="black" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M659.062 659.016L475 475" stroke="black" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M125 300V125H300" stroke="black" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M140.938 140.984L325 325" stroke="black" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M500 125H675V300" stroke="black" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M659.016 140.938L475 325" stroke="black" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M300 675H125V500" stroke="black" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M140.984 659.062L325 475" stroke="black" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </Button>
+                            </div>
+                            
+                        ) : (
+                            <p>Loading document...</p>
+                        )}
 
-                        </div>
                     </div>
-                    <div className="compareresumes-content-resume-optimized">
-                        <div className="compareresumes-content-resume-optimized-header">
-                            <h5>Optimized Resume</h5>
-                        </div>
-                        <div className="compareresumes-content-resume-optimized-content"></div>
+                    </Col>
+                    <Col  className="compareresumes-content-resume-optimized">
+                    <div className="compareresumes-content-resume-optimized-header">
+                        <h5>Optimized Resume</h5>
                     </div>
-                </div>
+                    <div className="compareresumes-content-resume-optimized-content"></div>
+                    </Col>
+                </Row>
+                <Row className="compareresumes-btn-content d-flex justify-content-around align-items-center flex-row gap-2 w-100">
+                    <Col className="px-3">
+                    <div className="compareresumes-container-btn d-flex justify-content-between align-items-center ">
+                        {/* change or remove href to cancel */}
+                        <button
+                            className="btn-cancel-optimizer btn-primary"
+                            onClick={() => {
+                                window.location.href = "/ResumeFitOptimizer/CompareResumes";
+                            }}
+                        >
+                        Cancel Optimizer
+                        </button>
+                        <button
+                            className="btn-save-export btn-primary"
+                            onClick={() => {
+                                window.location.href =
+                                "/ResumeFitOptimizer/SaveAndExportResumes";
+                            }}
+                        >
+                        Save and Export
+                        </button>
+                    </div>
+                    </Col>
+                </Row>
             </div>
         </div>
     );
