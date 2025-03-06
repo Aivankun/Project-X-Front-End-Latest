@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "../../styles/ResumeFitOptimizer.css";
 import { Button, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
