@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import React, { useEffect, useState } from "react";
 import { Button, Row, Col } from "react-bootstrap";
 
 import DocViewer, { DocViewerRenderers } from "react-doc-viewer";
