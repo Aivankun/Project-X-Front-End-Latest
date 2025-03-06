@@ -15,132 +15,72 @@ function CompareResumes() {
     const token = userData?.token;
     const log = console.log;
     log("uploadedDocData", uploadedDocData);
-    
     // Set uploadedDocxData state if it's not already set
-    // useEffect(() => {
-    //     if (uploadedDocData && !uploadedDocxData) {
-    //         setUploadedDocxData(uploadedDocData);
-    //     }
-    // }, [uploadedDocData, uploadedDocxData]);
-    // log("test:", 2);
+    useEffect(() => {
+        if (uploadedDocData && !uploadedDocxData) {
+            setUploadedDocxData(uploadedDocData);
+        }
+    }, [uploadedDocData, uploadedDocxData]);
+    log("test:", 2);
 
-    // useEffect(() => {
-    //     const fetchOriginalResume = async () => {
-    //         if (!uploadedDocxData || !uploadedDocxData.data || !uploadedDocxData.data._id) {
-    //             log("uploadedDocxData not ready yet.");
-    //             return;
-    //         }
-    //         log("test:", 2);
+    useEffect(() => {
+        const fetchOriginalResume = async () => {
+            if (!uploadedDocxData || !uploadedDocxData.data || !uploadedDocxData.data._id) {
+                log("uploadedDocxData not ready yet.");
+                return;
+            }
+            log("test:", 2);
 
-    //         log("Fetching document for ID:", uploadedDocxData.data._id);
-    //         try {
-    //             // const fileName = uploadedDocData.data.url.split('/').pop();
-    //             // ${uploadedDocxData.data.url}
-    //             // "C:\Users\Jay Li\Desktop\hr hatch\PROJEC-X\Back-end\uploads\67adf5b7ddef3e38582b9f22-1740885738821-Resume (1).docx"
-    //             // axios.get(`${SERVER_URL}/file-url/67adf5b7ddef3e38582b9f22-1740885738821-Resume (1).docx`)
-    //             // .then((response) => {
-    //             //     log("response." , response);
-    //             //     setDocData(response.data.fileUrl); // Set the generated file URL
-    //             // })
-    //             // .catch((error) => {
-    //             //     console.error("Error fetching document:", error);
-    //             // });
-    //             // const { fileUrl } = response.data;
-    //             // setDocData(fileUrl);
-
-
-    //             const response = await axios.get(
-    //                 `${SERVER_URL}/api/resume-fit-optimizer/get-document/${uploadedDocxData.data._id}`,
-    //                 {
-    //                     responseType: "blob",
-    //                     headers: {
-    //                         Authorization: `Bearer ${token}`,
-    //                     },
-    //                 }
-    //             );
-    //             log("response", response);
+            log("Fetching document for ID:", uploadedDocxData.data._id);
+            try {
+                const response = await axios.get(
+                    `${SERVER_URL}/api/resume-fit-optimizer/get-document/${uploadedDocxData.data._id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+    
+                log("Response from backend:", response.data);
+                log("response", response);
                 
-    //             // ✅ Debug: Check if response is a Blob
-    //             console.log("Response Data:", response.data);
-    //             console.log("Response Headers:", response.headers);
+                if (response.data && response.data.url) {
+                    // Extract file type based on extension (for DocViewer)
+                    const fileUrl = response.data.url;
+                    const fileExtension = fileUrl.split('.').pop().toLowerCase();
 
-    //             if (response.data instanceof Blob) {
-    //                 const url = URL.createObjectURL(response.data);
-    //                 log("Generated Blob URL:", url);
-                    
-    //                 // Extract filename from Content-Disposition header
-    //                 const contentDisposition = response.headers["content-disposition"];
-    //                 let filename = "document"; // Default filename
-    //                 if (contentDisposition) {
-    //                     const filenameMatch = contentDisposition.match(/filename="(.+)"/);
-    //                     if (filenameMatch && filenameMatch[1]) {
-    //                         filename = filenameMatch[1];
-    //                     }
-    //                 }
+                    let fileType = "unknown";
+                    if (fileExtension === "docx") fileType = "docx";
+                    else if (fileExtension === "doc") fileType = "doc";
+                    else if (fileExtension === "pdf") fileType = "pdf";
 
-    //                 // Extract file type (MIME type)
-    //                 const fileType = response.data.type;
-    //                 let fileExtension = "unknown";
+                    setDocData([
+                        {
+                            uri: fileUrl,
+                            fileType: fileType,
+                            fileName: `Original Resume.${fileExtension}`,
+                        }
+                    ]);
+                } else {
+                    console.error("Invalid response format:", response.data);
+                }
+            } catch (error) {
+                console.error("Error fetching original resume:", error);
+            }
+        };
 
-    //                 if (fileType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"){
-    //                     fileExtension = "docx";
-    //                 } else if (fileType === "application/msword"){
-    //                     fileExtension = "doc";
-    //                 } else if (fileType === "application/pdf"){
-    //                     fileExtension = "pdf";
-    //                 }
+        if (!docData) {
+            fetchOriginalResume();
+            log("test :", docData);
+        }
+        log("test :", docData);
+    }, [uploadedDocxData, SERVER_URL, token, docData]);
 
-    //                 setDocData([{
-    //                     uri: "https://www2.hu-berlin.de/stadtlabor/wp-content/uploads/2021/12/sample3.docx",
-    //                     fileType: fileExtension,
-    //                     fileName: filename,
-    //                 }]);
-    //             } else {
-    //                 console.error("Response is not a Blob:", response.data);
-    //             }
+    const expandResume = () => {
+        setIsExpanded(!isExpanded);
+    };
 
-    //             // const blob = new Blob([response.data], {
-    //             //     type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    //             // });
-
-    //             // const reader = new FileReader();
-    //             // reader.readAsDataURL(response.data);
-    //             // reader.onload = () => {
-    //             //     window.open(reader.result);
-    //             //     log("reader.result", reader.result);
-    //             //     setDocData(reader.result); // Fixed setDocData usage
-    //             // };
-    //             // reader.onerror = () => {
-    //             //     console.error("Failed to load the file");
-    //             // };
-    //             // log("response", response);
-    //             // const url = URL.createObjectURL(response.data);
-    //             // console.log("Generated Blob URL:", url);
-    //             // window.open(url, "_blank");
-    //             // setDocData(url);
-
-    //         } catch (error) {
-    //             console.error("Error fetching original resume:", error);
-    //         }
-    //     };
-
-    //     if (!docData) {
-    //         fetchOriginalResume();
-    //         log("test :", docData);
-    //     }
-    //     log("test :", docData);
-    // }, [uploadedDocxData, SERVER_URL, token, docData]);
-
-    // const expandResume = () => {
-    //     setIsExpanded(!isExpanded);
-    // };
-
-    // temp
-    setDocData([{
-        uri: "https://www2.hu-berlin.de/stadtlabor/wp-content/uploads/2021/12/sample3.docx",
-        fileType: "docx",
-        fileName: "sample3",
-    }]);
     return (
         <div className="ResumeFitOptimizer-container d-flex flex-column gap-2">
             <div className="compareresumes-container d-flex justify-content-center align-items-center flex-column gap-3">
@@ -150,7 +90,7 @@ function CompareResumes() {
                         <h5>Original Resume</h5>
                     </div>
                     <div className="compareresumes-content-resume-original-content">
-                        {/* {docData ? (
+                        {docData ? (
                             <div className={`resume-original-content-container ${isExpanded ? "expanded" : ""}`}>
                                 <DocViewer
                                     documents={docData}
@@ -179,6 +119,9 @@ function CompareResumes() {
                                     }}
                                     
                                 />
+                                {
+                                    
+                                }
                                 <Button
                                     className="expand-button"
                                     onClick={expandResume}
@@ -198,52 +141,7 @@ function CompareResumes() {
                             
                         ) : (
                             <p>Loading document...</p>
-                        )} */}
-                        <div className={`resume-original-content-container ${isExpanded ? "expanded" : ""}`}>
-                            <DocViewer
-                                documents={docData}
-                                pluginRenderers={DocViewerRenderers}
-                                style={{ height: "100%", width: "100%" }}
-                                config={{
-                                    header: {
-                                        disableHeader: false, // Set to true if you want to remove the entire header
-                                        disableFileName: false, // Hide file name
-                                        // retainZoomLevel: false, // Keep zoom level persistent
-                                    },
-                                    zoom: {
-                                        disableZoom: true, // Disable zoom buttons
-                                        disableWheelZoom: false, // Allow zoom with scroll wheel
-                                    },
-                                    fullscreen: {
-                                        disableFullscreen: true, // Disable the full-screen button
-                                    },
-                                    theme: {
-                                        primary: "#007bff", // Customize primary theme color
-                                        secondary: "#6c757d", // Customize secondary color
-                                        text_primary: "#000000", // Text color
-                                        text_secondary: "#ffffff", // Secondary text color
-                                        disableThemeToggle: true, // Hide theme toggle button
-                                    },
-                                }}
-                                
-                            />
-                            <Button
-                                className="expand-button"
-                                onClick={expandResume}
-                            >
-                                <svg width="20" height="20" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M675 500V675H500" stroke="black" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M659.062 659.016L475 475" stroke="black" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M125 300V125H300" stroke="black" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M140.938 140.984L325 325" stroke="black" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M500 125H675V300" stroke="black" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M659.016 140.938L475 325" stroke="black" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M300 675H125V500" stroke="black" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M140.984 659.062L325 475" stroke="black" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </Button>
-                        </div>
-
+                        )}
                     </div>
                     </Col>
                     <Col  className="compareresumes-content-resume-optimized">
