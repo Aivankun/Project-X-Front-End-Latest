@@ -1,17 +1,22 @@
 import React from "react";
-import "../../styles/ReferenceCheckQuestionnairePage.css";
 
 const TextBase = ({
-  setAnswer,
-  handleSubmit,
+  setTextBaseAnswer,
+  handleTextBaseSubmit,
   answer,
   loading,
   isSpeaking,
   isSubmitted,
+  reTry,
+  onReTrySubmit,
 }) => {
-  //Handle text base answer change
   const handleInputedTextChange = (event) => {
-    setAnswer(event.target.value);
+    setTextBaseAnswer(event.target.value);
+  };
+
+  const handleReTry = () => {
+    onReTrySubmit(false);
+    setTextBaseAnswer("");
   };
 
   return (
@@ -19,21 +24,25 @@ const TextBase = ({
       <h4>Answer:</h4>
       <textarea
         value={answer}
-        disabled={loading || isSubmitted} // Update this line
+        disabled={loading || isSubmitted || reTry}
         onChange={handleInputedTextChange}
         rows="4"
         placeholder={"Type your answer..."}
       />
       <div className="d-flex justify-content-center">
-        <button
-          onClick={handleSubmit}
-          disabled={!answer || loading || isSpeaking || isSubmitted} // Add isSubmitted here
-          className={
-            !answer || loading || isSpeaking || isSubmitted ? "disabled" : ""
-          } // Update className condition
-        >
-          {loading ? "Submitting..." : "Submit"}
-        </button>
+        {reTry ? (
+          <button onClick={handleReTry}>Retry</button>
+        ) : (
+          <button
+            onClick={handleTextBaseSubmit}
+            disabled={!answer || loading || isSpeaking || isSubmitted} // Add isSubmitted here
+            className={
+              !answer || loading || isSpeaking || isSubmitted ? "disabled" : ""
+            }
+          >
+            {loading ? "Submitting..." : "Submit"}
+          </button>
+        )}
       </div>
     </div>
   );
