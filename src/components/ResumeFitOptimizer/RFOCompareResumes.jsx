@@ -29,9 +29,6 @@ function CompareResumes() {
                 log("uploadedDocxData not ready yet.");
                 return;
             }
-            log("test:", 2);
-
-            log("Fetching document for ID:", uploadedDocxData.data._id);
             try {
                 const response = await axios.get(
                     `${SERVER_URL}/api/resume-fit-optimizer/get-document/${uploadedDocxData.data._id}`,
@@ -41,9 +38,6 @@ function CompareResumes() {
                         },
                     }
                 );
-    
-                log("Response from backend:", response.data);
-                log("response", response);
                 
                 if (response.data && response.data.url) {
                     // Extract file type based on extension (for DocViewer)
@@ -72,9 +66,7 @@ function CompareResumes() {
 
         if (!docData) {
             fetchOriginalResume();
-            log("test :", docData);
         }
-        log("test :", docData);
     }, [uploadedDocxData, SERVER_URL, token, docData]);
 
     const expandResume = () => {

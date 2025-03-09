@@ -1,14 +1,84 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Row, Col } from "react-bootstrap";
 import ProgressBar from "react-bootstrap/ProgressBar";
+import axios from "axios";
 
-function UploadDocs() {
+
+function AIResumeOptimizationAnalysis() {
+
+  // const [ratings, setRatings] = useState([]);
+  // const [overallFitScore, setOverallFitScore] = useState(0);
+  // const [isLoading, setIsLoading] = useState(false);
+  // const API = process.env.REACT_APP_API_URL;
+  // const userStr = localStorage.getItem("user");
+  // const userData = userStr ? JSON.parse(userStr) : null; 
+  // const token = userData?.token;
+  // const rfoUploadedDocxData = JSON.parse(localStorage.getItem("rfoUploadedDocxData"));
+  // const [documentId, setDocumentId] = useState(null);
+
+  // useEffect(() => {
+  //   if (rfoUploadedDocxData && rfoUploadedDocxData.data && rfoUploadedDocxData.data._id) {
+  //     const newDocumentId = rfoUploadedDocxData.data._id;
+  //     if (newDocumentId !== documentId) {
+  //       console.log("rfoUploadedDocxData.data", rfoUploadedDocxData.data);
+  //       console.log("rfoUploadedDocxData.data._id", rfoUploadedDocxData.data._id);
+        
+  //       fetchResumeRatings(newDocumentId);
+  //       setDocumentId(newDocumentId); // Update the state
+  //     }
+  //   } else {
+  //     if (rfoUploadedDocxData === null) {
+  //       console.log("rfoUploadedDocxData is null");
+  //     } else {
+  //       console.log("rfoUploadedDocxData does not have id");
+  //     }
+  //   }
+  // }, [rfoUploadedDocxData, documentId]); // Include documentId in dependencies
+
+
+  // const fetchResumeRatings = async (documentId) => {
+  //   setIsLoading(true);
+  //   try {
+  //     const formData = new FormData();
+  //     formData.append("documentId", documentId);
+  
+  //     const response = await axios.post(
+  //       `${API}/api/resume-fit-optimizer/resume-ratings`, // Removed documentId from URL
+  //       formData,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+  //     console.log("Resume ratings response:", response.data);
+  //     const data = response.data.data;
+      
+  //     setRatings([
+  //       { name: "Grammar & Clarity", current: data.GrammarClarityRating, total: 10 },
+  //       { name: "Structure & Readability", current: data.StructureReadabilityRating, total: 10 },
+  //       { name: "Key Experience", current: data.KeyExperienceRating, total: 10 },
+  //       { name: "Keyword Match", current: data.KeywordMatchRating, total: 10 },
+  //     ]);
+  //     console.log("response", response);
+      
+  //     setOverallFitScore(data.OverallFitScoreAnalysis);
+  //   } catch (error) {
+  //     console.error("Error fetching resume ratings:", error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+
   // const chartdata = [
   //   { name: "Experience", current: 4.6, total: 10, },
   //   { name: "Education", current: 4.6, total: 10 },
   //   { name: "Achievements", current: 4.6, total: 10 },
   //   { name: "Skills", current: 4.6, total: 10 },
   // ];
+
+
   const progressData = [
     { name: "Grammar & Clarity", current: 6, total: 10 },
     { name: "Structure & Readability", current: 8, total: 10 },
@@ -197,4 +267,4 @@ function UploadDocs() {
   );
 }
 
-export default UploadDocs;
+export default AIResumeOptimizationAnalysis;
