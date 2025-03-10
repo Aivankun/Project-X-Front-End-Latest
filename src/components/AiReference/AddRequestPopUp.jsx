@@ -132,8 +132,10 @@ const AddRequestPopUp = ({ onClose, onAddRequest }) => {
       });
 
       if (response.status === 201) {
-        onAddRequest();
-        navigate("/AiReferenceRequestEmailSent");
+        await onAddRequest();
+        navigate("/AiReferenceRequestEmailSent", {
+          state: { refereeEmail: referees.map((referee) => referee.email) },
+        });
         onClose();
       }
     } catch (error) {
@@ -209,7 +211,7 @@ const AddRequestPopUp = ({ onClose, onAddRequest }) => {
     switch (format) {
       case "HR-HATCH-FORMAT":
         return false;
-      case "CUSTOM_FORMAT":
+      case "CUSTOM-FORMAT":
         return true;
       default:
         return false;
@@ -417,7 +419,7 @@ const AddRequestPopUp = ({ onClose, onAddRequest }) => {
                         Choose Question Format
                       </option>
                       <option value="HR-HATCH-FORMAT">HR-HATCH Format</option>
-                      <option value="CUSTOM_FORMAT">Custom Format</option>
+                      <option value="CUSTOM-FORMAT">Custom Format</option>
                     </Form.Select>
                   ) : (
                     <>
