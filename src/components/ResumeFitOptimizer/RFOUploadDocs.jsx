@@ -112,7 +112,9 @@ function UploadDocs() {
       
 
       if (response.status === 201) {
-        console.log("Document uploaded successfully:", response.data);
+        console.log("Document uploaded successfully");
+        console.log("data:", response.data);
+        console.log("ratings:", response.ratings);
         setUploadedFile(null);
         setJobDescription("");
         setErrorMessage("");
